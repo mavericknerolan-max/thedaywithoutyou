@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>What Maverick Left Behind</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
   <style>
@@ -16,19 +16,20 @@
     }
 
     body {
-      background: #08070a;
+      background: #000;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       color: #2b2326;
+      overflow: hidden;
     }
 
-    /* BINGKAI HP IPHONE */
+    /* BINGKAI HP IPHONE (RESPONSIF PENUH DI HP) */
     .phone {
       width: 100%;
       max-width: 390px;
-      height: 820px;
+      height: 844px;
       max-height: 96vh;
       background: #0d0c10;
       border-radius: 46px;
@@ -37,6 +38,22 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+    }
+
+    /* TAMPILAN FULLSCREEN OTOMATIS JIKA DIBUKA DI HP */
+    @media (max-width: 480px) {
+      body {
+        background: #0d0c10;
+      }
+      .phone {
+        max-width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+      }
     }
 
     .island {
@@ -81,7 +98,7 @@
       transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    /* === 1. LOCKSCREEN (FOTO: lockscreen.jpeg) === */
+    /* === 1. LOCKSCREEN === */
     #lockscreen {
       background: linear-gradient(rgba(10,8,14,0.5), rgba(5,4,8,0.85)), url('lockscreen.jpeg') center/cover no-repeat;
       color: #fff;
@@ -115,7 +132,7 @@
       justify-content: space-between;
     }
 
-    /* KEYPAD PASSCODE */
+    /* KEYPAD PASSCODE DENGAN ANIMASI */
     #passcodeView {
       display: none;
       flex-direction: column;
@@ -123,20 +140,54 @@
       margin-top: 30px;
     }
 
-    .passcode-dots { display: flex; gap: 14px; margin: 15px 0 25px; }
-    .dot { width: 12px; height: 12px; border: 1.5px solid #fff; border-radius: 50%; }
-    .dot.filled { background: #fff; }
-
-    .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 24px; }
-    .key-btn {
-      width: 65px; height: 65px; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255,255,255,0.08);
-      color: #fff; font-size: 24px; font-weight: 600; cursor: pointer;
-      backdrop-filter: blur(8px);
+    .passcode-dots {
+      display: flex;
+      gap: 16px;
+      margin: 20px 0 30px;
     }
-    .key-btn:active { background: rgba(255,255,255,0.3); }
 
-    /* === 2. HOMESCREEN (FOTO: walpaper.jpeg) === */
+    /* TITIK PASSCODE DENGAN ANIMASI POP GLOW */
+    .dot {
+      width: 13px;
+      height: 13px;
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .dot.filled {
+      background: #ffffff;
+      border-color: #ffffff;
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.9);
+      transform: scale(1.3);
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px 24px;
+    }
+
+    .key-btn {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 24px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: transform 0.1s, background 0.1s;
+    }
+
+    .key-btn:active {
+      transform: scale(0.88);
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* === 2. HOMESCREEN === */
     #homescreen {
       background: linear-gradient(rgba(10,8,14,0.65), rgba(5,4,8,0.9)), url('walpaper.jpeg') center/cover no-repeat;
       padding: 55px 20px 20px;
@@ -184,7 +235,7 @@
     }
     .app-name { font-size: 11px; font-weight: 600; color: #ccc; }
 
-    /* === 3. APP: MESSAGES (INBOX + PINNED + TEMAN-TEMAN) === */
+    /* === 3. APP: MESSAGES (INBOX & CHATS) === */
     #chatApp {
       background: #000;
       color: #fff;
@@ -193,7 +244,6 @@
       flex-direction: column;
     }
 
-    /* INBOX VIEW */
     #inboxView {
       display: flex;
       flex-direction: column;
@@ -211,7 +261,7 @@
     }
     .inbox-title { font-size: 28px; font-weight: 700; color: #fff; }
 
-    /* PINNED CONVERSATION (safe place: TANPA FOTO PROFIL) */
+    /* PINNED CARD safe place */
     .pinned-section {
       padding: 16px 18px 12px;
       border-bottom: 1px solid #1a1a1e;
@@ -233,7 +283,6 @@
     }
     .pinned-card:active { background: #262629; }
     
-    /* AVATAR SAFE PLACE: POLOS DEFAULT iOS */
     .pinned-avatar-blank {
       width: 46px; height: 46px; border-radius: 50%;
       background: #2c2c2e; color: #8e8e93;
@@ -241,7 +290,6 @@
       font-size: 22px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* WRAPPER FOTO PROFIL TEMAN (BISA DIISI FOTO DENGAN FALLBACK) */
     .avatar-wrapper {
       width: 44px; height: 44px; border-radius: 50%;
       background: #2c2c2e; color: #fff;
@@ -254,7 +302,6 @@
       position: absolute; inset: 0;
     }
 
-    /* CHAT LIST ITEMS (SAHABAT MAVE) */
     .chat-list { flex: 1; overflow-y: auto; }
     .chat-item {
       display: flex; align-items: center; gap: 12px;
@@ -318,7 +365,7 @@
       border-radius: 18px;
       padding: 14px;
       position: relative;
-      margin-left: 10px;
+      margin-left: 6px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
     .draft-badge {
@@ -331,7 +378,6 @@
     .draft-text { font-size: 12.5px; color: #d1d1d6; line-height: 1.65; text-align: justify; }
     .draft-time { font-size: 10px; color: #777; text-align: right; margin-top: 8px; }
 
-    /* BUBBLE CHAT BIASA (TEMAN) */
     .imsg-row { display: flex; flex-direction: column; margin-bottom: 8px; }
     .bubble-friend {
       background: #262629; color: #fff; padding: 10px 14px;
@@ -360,7 +406,7 @@
       <span class="battery-crit">⚡ 3%</span>
     </div>
 
-    <!-- 1. LOCKSCREEN (WALLPAPER: lockscreen.jpeg) -->
+    <!-- 1. LOCKSCREEN -->
     <div class="screen" id="lockscreen">
       <div id="lockMain">
         <div class="lock-time">03:14</div>
@@ -382,7 +428,7 @@
       <!-- KEYPAD PASSCODE (KODE: 040705) -->
       <div id="passcodeView">
         <p style="font-size: 14px; font-weight: 600; color: #fff;">Masukkan Sandi</p>
-        <p style="font-size: 11px; opacity: 0.7; color: #ccc; margin-top: 3px;">(Petunjuk: april-agustus-mei• 6 Digit)</p>
+        <p style="font-size: 11px; opacity: 0.7; color: #ccc; margin-top: 3px;">(Petunjuk: april-agustus-mei • 6 Digit)</p>
 
         <div class="passcode-dots" id="dotsContainer">
           <div class="dot"></div><div class="dot"></div>
@@ -407,7 +453,7 @@
       </div>
     </div>
 
-    <!-- 2. HOMESCREEN (WALLPAPER: walpaper.jpeg) -->
+    <!-- 2. HOMESCREEN -->
     <div class="screen" id="homescreen">
       <div class="widget-box">
         <h3>⚠️ LOW BATTERY WARNING (3%)</h3>
@@ -437,7 +483,7 @@
       </div>
     </div>
 
-    <!-- 3. APP: MESSAGES (INBOX + PINNED + TEMAN-TEMAN) -->
+    <!-- 3. APP: MESSAGES -->
     <div class="screen" id="chatApp">
 
       <!-- VIEW A: INBOX DAFTAR PESAN -->
@@ -450,7 +496,7 @@
           <div class="inbox-title">Messages</div>
         </div>
 
-        <!-- PINNED CONVERSATION: safe place (TANPA FOTO PROFIL) -->
+        <!-- PINNED: safe place (BERSIH TANPA PETUNJUK MENGGANGGU DI LUAR) -->
         <div class="pinned-section">
           <div class="pinned-label">📌 PINNED CONVERSATION</div>
           <div class="pinned-card" onclick="openChatView('chatSafePlaceView')">
@@ -461,13 +507,13 @@
                 <span style="font-size: 10px; color: #ff453a; font-weight: 700;">DRAF</span>
               </div>
               <div style="font-size: 12px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                Draf: Dada Mbull makin sesak tiap malam, Abang...
+                Draf: mbull capek abang...
               </div>
             </div>
           </div>
         </div>
 
-        <!-- DAFTAR CHAT TEMAN-TEMAN (DENGAN PP gama.jpg, arga.jpg, jester.jpg) -->
+        <!-- DAFTAR CHAT TEMAN-TEMAN -->
         <div class="chat-list">
           <!-- GAMA -->
           <div class="chat-item" onclick="openChatView('chatGamaView')">
@@ -519,7 +565,7 @@
         </div>
       </div>
 
-      <!-- VIEW B: CHAT DETAIL 'safe place' (TANPA PP / SILUET ABU-ABU) -->
+      <!-- VIEW B: CHAT DETAIL 'safe place' (SEMUA DRAF DI DALAM SINI) -->
       <div class="chat-detail-view" id="chatSafePlaceView">
         <div class="chat-header">
           <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
@@ -546,18 +592,18 @@
             <div class="draft-time">02:14 AM • Belum Dikirim</div>
           </div>
 
-          <!-- DRAF 2: LOLOS KERJA & TUNTUTAN ORTU -->
+          <!-- DRAF 2: PINDAH DIVISI -->
           <div class="draft-card">
             <div class="draft-badge">🔴 DRAF TERSIMPAN • TIDAK DIKIRIM</div>
             <div class="draft-title">Mbull pindah bagian, Abang!</div>
             <div class="draft-text">
-              Abang, hari ini pengumuman. Mbull pindah divisi yang dulu sering kita obrolin pas begadang dan jadi alasan kita putus karena mbuull merasa burnoutt. Pas Mbull kasih tahu papa, papa cuma bilang: <em>"Gitu doang bangga, gajinya gak seberapa dibanding anak temen papa."</em><br><br>
+              Abang, hari ini pengumuman. Mbull pindah divisi yang dulu sering kita obrolin pas begadang dan jadi alasan kita putus karena Mbull merasa burnout. Pas Mbull kasih tahu papa, papa cuma bilang: <em>"Gitu doang bangga, gajinya gak seberapa dibanding anak temen papa."</em><br><br>
               Mbull refleks langsung buka roomchat ini mau pamer ke Abang, pengen dengar Abang bangga dan teriak: <em>'Pinter banget Mbull-nya Abang!'</em>. Tapi pas jari Mbull udah di keyboard... Mbull baru sadar kita udah selesai. Sekarang udah gak ada yang bangga sama Mbull lagi...
             </div>
             <div class="draft-time">17:40 PM • Belum Dikirim</div>
           </div>
 
-          <!-- DRAF 3: ME TIME & KETERGANTUNGAN LDR -->
+          <!-- DRAF 3: ME TIME & KETERGANTUNGAN -->
           <div class="draft-card">
             <div class="draft-badge">🔴 DRAF TERSIMPAN • TIDAK DIKIRIM</div>
             <div class="draft-title">Me Time Jam 2 Pagi</div>
@@ -568,33 +614,32 @@
             <div class="draft-time">02:05 AM • Belum Dikirim</div>
           </div>
 
-          <!-- DRAF 6: UNGKAPAM -->
-          <div class="draft-card" style="border-color: #ff3b30; background: #221418;">
-            <div class="draft-badge" style="background: #ff3b30; color: #fff;">⚠️ DRAF TERAKHIR • PETUNJUK</div>
-            <div class="draft-title">Mbull Gak Kuat Lagi, Abang</div>
+          <!-- DRAF 4: SEVA SUDAH PUNYA PASANGAN BARU -->
+          <div class="draft-card">
+            <div class="draft-badge">🔴 DRAF TERSIMPAN • TIDAK DIKIRIM</div>
+            <div class="draft-title">Mbull tahu kabar Abang...</div>
             <div class="draft-text">
-              abang, mbull tau kabar abang, mbull selalu mengamati dan you already in relationship ya...<br><br>
-              mbull senang kl orang itu buat abang bahagia, maaf ya abang kl mbull banyak kurangnya selama ini.
+              Abang, Mbull tau kabar Abang. Mbull selalu mengamati dari jauh dan <em>you are already in a relationship ya...</em><br><br>
+              Mbull senang kalau orang itu bisa buat Abang bahagia. Maaf ya Abang kalau Mbull banyak kurangnya selama ini.
+            </div>
+            <div class="draft-time">03:00 AM • Belum Dikirim</div>
+          </div>
+
+          <!-- DRAF 5: LOST SPARK & PETUNJUK KE VOICE MEMOS -->
+          <div class="draft-card" style="border-color: #ff3b30; background: #221418;">
+            <div class="draft-badge" style="background: #ff3b30; color: #fff;">⚠️ DRAF TERAKHIR</div>
+            <div class="draft-title">Mbull capek, Abang..</div>
+            <div class="draft-text">
+              Semuanya kayak hilang, Mbull gak bisa percaya siapa-siapa lagi, even diri Mbull sendiri. <em>I feel like I lost my spark...</em><br><br>
+              Tangan Mbull gemeteran ngetik ini... Mbull rekam suara Mbull di <strong>Voice Memos</strong>. Kalau Abang suatu saat nemu HP ini, tolong dengerin ya, Abang... Maafin Mbull yang cengeng kalau menyangkut Abang.
             </div>
             <div class="draft-time">03:12 AM • Belum Dikirim</div>
           </div>
+
         </div>
       </div>
 
-      <!-- DRAF 6: PETUNJUK MENUJU VOICE MEMO -->
-          <div class="draft-card" style="border-color: #ff3b30; background: #221418;">
-            <div class="draft-badge" style="background: #ff3b30; color: #fff;">⚠️ DRAF TERAKHIR • PETUNJUK</div>
-            <div class="draft-title">mbull capek abang..</div>
-            <div class="draft-text">
-              semuanya kayak hilang, mbull gabisa percaya siapa-siapa even diri mbull sendiir, i feel like i lost my spark<br><br>
-              Tangan Mbull gemeteran ngetik ini... Mbull rekam suara Mbull di <strong>voice memos</strong>. Kalau Abang suatu saat nemu HP ini, tolong dengerin ya, Abang... Maafin Mbull yang cengeng kalau menyangkut abang.
-            </div>
-            <div class="draft-time">03:12 AM • Belum Dikirim</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VIEW C: CHAT GAMA (DENGAN PP gama.jpg) -->
+      <!-- VIEW C: CHAT GAMA -->
       <div class="chat-detail-view" id="chatGamaView">
         <div class="chat-header">
           <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
@@ -615,7 +660,7 @@
         </div>
       </div>
 
-      <!-- VIEW D: CHAT ARGA (DENGAN PP arga.jpg) -->
+      <!-- VIEW D: CHAT ARGA -->
       <div class="chat-detail-view" id="chatArgaView">
         <div class="chat-header">
           <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
@@ -636,7 +681,7 @@
         </div>
       </div>
 
-      <!-- VIEW E: CHAT JESTER (DENGAN PP jester.jpg) -->
+      <!-- VIEW E: CHAT JESTER -->
       <div class="chat-detail-view" id="chatJesterView">
         <div class="chat-header">
           <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
@@ -683,7 +728,9 @@
       if (enteredPin.length < 6) {
         enteredPin += num;
         updateDots();
-        if (enteredPin.length === 6) setTimeout(checkPin, 150);
+        if (enteredPin.length === 6) {
+          setTimeout(checkPin, 180);
+        }
       }
     }
 
@@ -695,8 +742,11 @@
     function updateDots() {
       const dots = document.querySelectorAll('.dot');
       dots.forEach((dot, index) => {
-        if (index < enteredPin.length) dot.classList.add('filled');
-        else dot.classList.remove('filled');
+        if (index < enteredPin.length) {
+          dot.classList.add('filled');
+        } else {
+          dot.classList.remove('filled');
+        }
       });
     }
 
