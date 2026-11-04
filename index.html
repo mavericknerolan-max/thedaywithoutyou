@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What Maverick Left Behind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background: #08070a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #2b2326;
+    }
+
+    /* BINGKAI HP IPHONE */
+    .phone {
+      width: 100%;
+      max-width: 390px;
+      height: 820px;
+      max-height: 96vh;
+      background: #0d0c10;
+      border-radius: 46px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8), inset 0 0 0 4px #26222b;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .island {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 1000;
+    }
+
+    .status-bar {
+      height: 44px;
+      padding: 12px 26px 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 900;
+      color: #fff;
+    }
+
+    .battery-crit {
+      color: #ff3b30;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      animation: blink 1.2s infinite;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    /* === 1. LOCKSCREEN (FOTO: lockscreen.jpeg) === */
+    #lockscreen {
+      background: linear-gradient(rgba(10,8,14,0.5), rgba(5,4,8,0.85)), url('lockscreen.jpeg') center/cover no-repeat;
+      color: #fff;
+      padding: 75px 22px 30px;
+      text-align: center;
+      z-index: 100;
+    }
+
+    .lock-time { font-size: 68px; font-weight: 700; letter-spacing: -2px; }
+    .lock-date { font-size: 14px; opacity: 0.8; margin-top: -6px; }
+
+    .lock-notif {
+      background: rgba(22, 19, 28, 0.85);
+      backdrop-filter: blur(25px);
+      padding: 14px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      margin-top: 45px;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      animation: pulse 2.5s infinite;
+    }
+
+    .notif-tag {
+      font-size: 11px;
+      color: #ff453a;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* KEYPAD PASSCODE */
+    #passcodeView {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    .passcode-dots { display: flex; gap: 14px; margin: 15px 0 25px; }
+    .dot { width: 12px; height: 12px; border: 1.5px solid #fff; border-radius: 50%; }
+    .dot.filled { background: #fff; }
+
+    .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 24px; }
+    .key-btn {
+      width: 65px; height: 65px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255,255,255,0.08);
+      color: #fff; font-size: 24px; font-weight: 600; cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    .key-btn:active { background: rgba(255,255,255,0.3); }
+
+    /* === 2. HOMESCREEN (FOTO: walpaper.jpeg) === */
+    #homescreen {
+      background: linear-gradient(rgba(10,8,14,0.65), rgba(5,4,8,0.9)), url('walpaper.jpeg') center/cover no-repeat;
+      padding: 55px 20px 20px;
+      display: none;
+      z-index: 10;
+    }
+
+    .widget-box {
+      background: rgba(26, 23, 33, 0.85);
+      backdrop-filter: blur(14px);
+      border-radius: 22px;
+      padding: 16px;
+      margin-bottom: 25px;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+    }
+    .widget-box h3 { font-size: 14px; color: #ff453a; margin-bottom: 4px; }
+    .widget-box p { font-size: 12px; color: #aaa; line-height: 1.45; }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px 14px;
+      text-align: center;
+    }
+
+    .app-icon {
+      width: 58px; height: 58px; border-radius: 16px;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 25px; margin: 0 auto 5px;
+      cursor: pointer; position: relative;
+    }
+    .app-icon:active { transform: scale(0.92); }
+
+    .bg-chat { background: #1c73e8; color: #fff; }
+    .bg-voice { background: #d9383a; color: #fff; }
+    .bg-maps { background: #2e7d32; color: #fff; }
+    .bg-gallery { background: #4a4a52; color: #fff; }
+
+    .badge-unread {
+      position: absolute; top: -4px; right: -4px;
+      background: #ff3b30; color: #fff; font-size: 10px; font-weight: 700;
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; border: 2px solid #000;
+    }
+    .app-name { font-size: 11px; font-weight: 600; color: #ccc; }
+
+    /* === 3. APP: MESSAGES (INBOX + PINNED + TEMAN-TEMAN) === */
+    #chatApp {
+      background: #000;
+      color: #fff;
+      display: none;
+      z-index: 200;
+      flex-direction: column;
+    }
+
+    /* INBOX VIEW */
+    #inboxView {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: #000;
+    }
+
+    .inbox-header {
+      padding: 48px 18px 12px;
+      background: #121214;
+      border-bottom: 1px solid #1c1c1e;
+    }
+    .inbox-top-bar {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+    }
+    .inbox-title { font-size: 28px; font-weight: 700; color: #fff; }
+
+    /* PINNED CONVERSATION (safe place: TANPA FOTO PROFIL) */
+    .pinned-section {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid #1a1a1e;
+      background: #0a0a0c;
+    }
+    .pinned-label {
+      font-size: 11px; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px; margin-bottom: 10px; display: flex; align-items: center; gap: 4px;
+    }
+    .pinned-card {
+      background: #1c1c1e;
+      border: 1.5px solid rgba(10, 132, 255, 0.4);
+      border-radius: 18px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .pinned-card:active { background: #262629; }
+    
+    /* AVATAR SAFE PLACE: POLOS DEFAULT iOS */
+    .pinned-avatar-blank {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: #2c2c2e; color: #8e8e93;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* WRAPPER FOTO PROFIL TEMAN (BISA DIISI FOTO DENGAN FALLBACK) */
+    .avatar-wrapper {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: #2c2c2e; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; flex-shrink: 0;
+      position: relative; overflow: hidden;
+    }
+    .avatar-wrapper img {
+      width: 100%; height: 100%; object-fit: cover;
+      position: absolute; inset: 0;
+    }
+
+    /* CHAT LIST ITEMS (SAHABAT MAVE) */
+    .chat-list { flex: 1; overflow-y: auto; }
+    .chat-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; border-bottom: 1px solid #161618;
+      cursor: pointer;
+    }
+    .chat-item:active { background: #141416; }
+
+    .chat-item-content { flex: 1; overflow: hidden; }
+    .chat-item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .chat-item-name { font-size: 14.5px; font-weight: 600; color: #fff; }
+    .chat-item-time { font-size: 11px; color: #0a84ff; font-weight: 600; }
+    .chat-item-preview {
+      font-size: 12.5px; color: #8e8e93; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .unread-indicator {
+      width: 8px; height: 8px; background: #0a84ff; border-radius: 50%; margin-right: -4px;
+    }
+
+    /* CHAT DETAIL VIEW */
+    .chat-detail-view {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      background: #000;
+    }
+
+    .chat-header {
+      padding: 48px 16px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #1c1c1e; background: #121214;
+    }
+    .back-btn { color: #0a84ff; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+    .chat-contact-info {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .chat-header-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: #2c2c2e; color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; margin-bottom: 2px; position: relative; overflow: hidden;
+    }
+    .chat-header-avatar img {
+      width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;
+    }
+
+    .chat-contact-name { font-size: 13.5px; font-weight: 700; color: #fff; }
+    .chat-contact-sub { font-size: 10px; color: #ff453a; font-weight: 600; }
+
+    .chat-scroll-area {
+      flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;
+    }
+    .chat-date-divider {
+      text-align: center; font-size: 11px; color: #666; margin: 10px 0 5px; font-weight: 500;
+    }
+
+    /* KARTU DRAF KHUSUS safe place */
+    .draft-card {
+      background: #1c1c1e;
+      border: 1px solid rgba(255, 69, 58, 0.35);
+      border-radius: 18px;
+      padding: 14px;
+      position: relative;
+      margin-left: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .draft-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 700; color: #ff453a;
+      background: rgba(255, 69, 58, 0.15);
+      padding: 3px 8px; border-radius: 12px; margin-bottom: 8px;
+    }
+    .draft-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .draft-text { font-size: 12.5px; color: #d1d1d6; line-height: 1.65; text-align: justify; }
+    .draft-time { font-size: 10px; color: #777; text-align: right; margin-top: 8px; }
+
+    /* BUBBLE CHAT BIASA (TEMAN) */
+    .imsg-row { display: flex; flex-direction: column; margin-bottom: 8px; }
+    .bubble-friend {
+      background: #262629; color: #fff; padding: 10px 14px;
+      font-size: 13px; line-height: 1.45; border-radius: 18px;
+      border-bottom-left-radius: 4px; align-self: flex-start; max-width: 80%;
+    }
+
+    .home-indicator {
+      width: 130px; height: 5px; background: #fff; border-radius: 10px;
+      position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); z-index: 1000; cursor: pointer;
+    }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+    .shake { animation: shake 0.35s; }
+  </style>
+</head>
+<body>
+
+  <div class="phone" id="phoneBox">
+    <div class="island"></div>
+
+    <div class="status-bar" id="statusBar">
+      <span>03:14</span>
+      <span class="battery-crit">⚡ 3%</span>
+    </div>
+
+    <!-- 1. LOCKSCREEN (WALLPAPER: lockscreen.jpeg) -->
+    <div class="screen" id="lockscreen">
+      <div id="lockMain">
+        <div class="lock-time">03:14</div>
+        <div class="lock-date">Hujan Lebat • Ponsel Ditemukan</div>
+
+        <!-- NOTIFIKASI DRAF KE safe place -->
+        <div class="lock-notif" onclick="showPasscode()">
+          <div class="notif-tag">
+            <span>MESSAGES • DRAF TERSIMPAN</span>
+            <span>03:10</span>
+          </div>
+          <p style="font-size: 13px; font-weight: 700; color: #fff;">Kepada: safe place</p>
+          <p style="font-size: 11.5px; color: #bbb; margin-top: 3px;">
+            "Abang, dada Mbull sesak lagi... Mama papa ribut lagi di depan..." [Ketuk untuk buka kunci]
+          </p>
+        </div>
+      </div>
+
+      <!-- KEYPAD PASSCODE (KODE: 040705) -->
+      <div id="passcodeView">
+        <p style="font-size: 14px; font-weight: 600; color: #fff;">Masukkan Sandi</p>
+        <p style="font-size: 11px; opacity: 0.7; color: #ccc; margin-top: 3px;">(Petunjuk: april-agustus-mei• 6 Digit)</p>
+
+        <div class="passcode-dots" id="dotsContainer">
+          <div class="dot"></div><div class="dot"></div>
+          <div class="dot"></div><div class="dot"></div>
+          <div class="dot"></div><div class="dot"></div>
+        </div>
+
+        <div class="keypad">
+          <button class="key-btn" onclick="pressKey('1')">1</button>
+          <button class="key-btn" onclick="pressKey('2')">2</button>
+          <button class="key-btn" onclick="pressKey('3')">3</button>
+          <button class="key-btn" onclick="pressKey('4')">4</button>
+          <button class="key-btn" onclick="pressKey('5')">5</button>
+          <button class="key-btn" onclick="pressKey('6')">6</button>
+          <button class="key-btn" onclick="pressKey('7')">7</button>
+          <button class="key-btn" onclick="pressKey('8')">8</button>
+          <button class="key-btn" onclick="pressKey('9')">9</button>
+          <button class="key-btn" style="font-size: 13px;" onclick="cancelPasscode()">Batal</button>
+          <button class="key-btn" onclick="pressKey('0')">0</button>
+          <button class="key-btn" style="font-size: 14px;" onclick="deleteKey()">⌫</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. HOMESCREEN (WALLPAPER: walpaper.jpeg) -->
+    <div class="screen" id="homescreen">
+      <div class="widget-box">
+        <h3>⚠️ LOW BATTERY WARNING (3%)</h3>
+        <p>"Ponsel ini milik Maverick. Seluruh berkas pribadi belum sempat dihapus sebelum pemiliknya menghilang."</p>
+      </div>
+
+      <div class="apps-grid">
+        <div class="app-item" onclick="openApp('chatApp')">
+          <div class="app-icon bg-chat">
+            💬
+            <div class="badge-unread">12</div>
+          </div>
+          <div class="app-name">Pesan</div>
+        </div>
+        <div class="app-item" onclick="alert('Petunjuk berikutnya ada di Pesan!')">
+          <div class="app-icon bg-voice">🎙️</div>
+          <div class="app-name">Voice Memos</div>
+        </div>
+        <div class="app-item" onclick="alert('Petunjuk berikutnya ada di Pesan!')">
+          <div class="app-icon bg-maps">📍</div>
+          <div class="app-name">Maps</div>
+        </div>
+        <div class="app-item" onclick="alert('Petunjuk berikutnya ada di Pesan!')">
+          <div class="app-icon bg-gallery">🗑️</div>
+          <div class="app-name">Baru Dihapus</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. APP: MESSAGES (INBOX + PINNED + TEMAN-TEMAN) -->
+    <div class="screen" id="chatApp">
+
+      <!-- VIEW A: INBOX DAFTAR PESAN -->
+      <div id="inboxView">
+        <div class="inbox-header">
+          <div class="inbox-top-bar">
+            <span class="back-btn" onclick="goHome()">‹ Home</span>
+            <span style="font-size: 14px; font-weight: 600; color: #0a84ff;">Edit</span>
+          </div>
+          <div class="inbox-title">Messages</div>
+        </div>
+
+        <!-- PINNED CONVERSATION: safe place (TANPA FOTO PROFIL) -->
+        <div class="pinned-section">
+          <div class="pinned-label">📌 PINNED CONVERSATION</div>
+          <div class="pinned-card" onclick="openChatView('chatSafePlaceView')">
+            <div class="pinned-avatar-blank">👤</div>
+            <div style="flex: 1; overflow: hidden;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                <span style="font-size: 14.5px; font-weight: 700; color: #fff;">safe place</span>
+                <span style="font-size: 10px; color: #ff453a; font-weight: 700;">DRAF</span>
+              </div>
+              <div style="font-size: 12px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                Draf: Dada Mbull makin sesak tiap malam, Abang...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAFTAR CHAT TEMAN-TEMAN (DENGAN PP gama.jpg, arga.jpg, jester.jpg) -->
+        <div class="chat-list">
+          <!-- GAMA -->
+          <div class="chat-item" onclick="openChatView('chatGamaView')">
+            <div class="unread-indicator"></div>
+            <div class="avatar-wrapper" style="background: #5856d6;">
+              <img src="gama.jpg" onerror="this.style.display='none'" alt="Gama">
+              <span>G</span>
+            </div>
+            <div class="chat-item-content">
+              <div class="chat-item-top">
+                <span class="chat-item-name">Gama</span>
+                <span class="chat-item-time">Kemarin</span>
+              </div>
+              <div class="chat-item-preview">Mave lo di mana anjir? Kosan lo digembok...</div>
+            </div>
+          </div>
+
+          <!-- ARGA -->
+          <div class="chat-item" onclick="openChatView('chatArgaView')">
+            <div class="unread-indicator"></div>
+            <div class="avatar-wrapper" style="background: #ff9500;">
+              <img src="arga.jpg" onerror="this.style.display='none'" alt="Arga">
+              <span>A</span>
+            </div>
+            <div class="chat-item-content">
+              <div class="chat-item-top">
+                <span class="chat-item-name">Arga</span>
+                <span class="chat-item-time">2 hari lalu</span>
+              </div>
+              <div class="chat-item-preview">Mave angkat telpon gue please. Jangan ngilang...</div>
+            </div>
+          </div>
+
+          <!-- JESTER -->
+          <div class="chat-item" onclick="openChatView('chatJesterView')">
+            <div class="unread-indicator"></div>
+            <div class="avatar-wrapper" style="background: #30d158;">
+              <img src="jester.jpg" onerror="this.style.display='none'" alt="Jester">
+              <span>J</span>
+            </div>
+            <div class="chat-item-content">
+              <div class="chat-item-top">
+                <span class="chat-item-name">Jester</span>
+                <span class="chat-item-time">3 hari lalu</span>
+              </div>
+              <div class="chat-item-preview">Mav, nyokap lo nelpon gue nanyain lo ke mana...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW B: CHAT DETAIL 'safe place' (TANPA PP / SILUET ABU-ABU) -->
+      <div class="chat-detail-view" id="chatSafePlaceView">
+        <div class="chat-header">
+          <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
+          <div class="chat-contact-info">
+            <div class="chat-header-avatar" style="background: #2c2c2e; color: #8e8e93;">👤</div>
+            <div class="chat-contact-name">safe place</div>
+            <div class="chat-contact-sub">⚠️ 15 Draf Tidak Pernah Terkirim</div>
+          </div>
+          <span style="width: 40px;"></span>
+        </div>
+
+        <div class="chat-scroll-area">
+          <div class="chat-date-divider">ARSIP DRAF HARIAN (TAK PERNAH DIKIRIM)</div>
+
+          <!-- DRAF 1: RUMAH & ORTU -->
+          <div class="draft-card">
+            <div class="draft-badge">🔴 DRAF TERSIMPAN • TIDAK DIKIRIM</div>
+            <div class="draft-title">Laporan Rumah Malam Ini...</div>
+            <div class="draft-text">
+              Abang... mama sama papa ribut lagi tadi jam 8 malam. Piring pada pecah di dapur, makian mereka kedengeran kenceng banget sampai kamar Mbull. Mbull kunci pintu sambil pakai headset mutar lagu yang biasa Abang stel buat Mbull.<br><br>
+              Biasanya kalau kayak gini Mbull langsung chat abang dan minta peluk sekarang dah gabisa ya?, terus Abang selalu bilang: <em>"Tenang Mbull, ada Abang di sini, Mbull aman sama Abang."</em><br><br>
+              Sekarang Mbull harus lari ke mana, Abang? Kamar Mbull dingin banget, Mbull takut sendirian...
+            </div>
+            <div class="draft-time">02:14 AM • Belum Dikirim</div>
+          </div>
+
+          <!-- DRAF 2: LOLOS KERJA & TUNTUTAN ORTU -->
+          <div class="draft-card">
+            <div class="draft-badge">🔴 DRAF TERSIMPAN • TIDAK DIKIRIM</div>
+            <div class="draft-title">Mbull pindah bagian, Abang!</div>
+            <div class="draft-text">
+              Abang, hari ini pengumuman. Mbull pindah divisi yang dulu sering kita obrolin pas begadang dan jadi alasan kita putus karena mbuull merasa burnoutt. Pas Mbull kasih tahu papa, papa cuma bilang: <em>"Gitu doang bangga, gajinya gak seberapa dibanding anak temen papa."</em><br><br>
+              Mbull refleks langsung buka roomchat ini mau pamer ke Abang, pengen dengar Abang bangga dan teriak: <em>'Pinter banget Mbull-nya Abang!'</em>. Tapi pas jari Mbull udah di keyboard... Mbull baru sadar kita udah selesai. Sekarang udah gak ada yang bangga sama Mbull lagi...
+            </div>
+            <div class="draft-time">17:40 PM • Belum Dikirim</div>
+          </div>
+
+          <!-- DRAF 3: ME TIME & KETERGANTUNGAN LDR -->
+          <div class="draft-card">
+            <div class="draft-badge">🔴 DRAF TERSIMPAN • TIDAK DIKIRIM</div>
+            <div class="draft-title">Me Time Jam 2 Pagi</div>
+            <div class="draft-text">
+              Mbull me time ke minimarket pojok jam 2 pagi, beli sprite yang biasa Abang paksa Mbull minum tiap Mbull lagi pusing atau kepikiran rumah. Mbull duduk di parkiran sendirian ngeliatin jalanan sepi.<br><br>
+              Lucu ya, kita jauh dan belum pernah ketemu fisik secara langsung, tapi kenapa pas Abang gak ada, rasanya separuh hidup Mbull ikutan hilang? Mbull ketergantungan parah sama Abang... Mbull kangen dipanggil Mbull sama Abang.
+            </div>
+            <div class="draft-time">02:05 AM • Belum Dikirim</div>
+          </div>
+
+          <!-- DRAF 6: UNGKAPAM -->
+          <div class="draft-card" style="border-color: #ff3b30; background: #221418;">
+            <div class="draft-badge" style="background: #ff3b30; color: #fff;">⚠️ DRAF TERAKHIR • PETUNJUK</div>
+            <div class="draft-title">Mbull Gak Kuat Lagi, Abang</div>
+            <div class="draft-text">
+              abang, mbull tau kabar abang, mbull selalu mengamati dan you already in relationship ya...<br><br>
+              mbull senang kl orang itu buat abang bahagia, maaf ya abang kl mbull banyak kurangnya selama ini.
+            </div>
+            <div class="draft-time">03:12 AM • Belum Dikirim</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DRAF 6: PETUNJUK MENUJU VOICE MEMO -->
+          <div class="draft-card" style="border-color: #ff3b30; background: #221418;">
+            <div class="draft-badge" style="background: #ff3b30; color: #fff;">⚠️ DRAF TERAKHIR • PETUNJUK</div>
+            <div class="draft-title">mbull capek abang..</div>
+            <div class="draft-text">
+              semuanya kayak hilang, mbull gabisa percaya siapa-siapa even diri mbull sendiir, i feel like i lost my spark<br><br>
+              Tangan Mbull gemeteran ngetik ini... Mbull rekam suara Mbull di <strong>voice memos</strong>. Kalau Abang suatu saat nemu HP ini, tolong dengerin ya, Abang... Maafin Mbull yang cengeng kalau menyangkut abang.
+            </div>
+            <div class="draft-time">03:12 AM • Belum Dikirim</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW C: CHAT GAMA (DENGAN PP gama.jpg) -->
+      <div class="chat-detail-view" id="chatGamaView">
+        <div class="chat-header">
+          <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
+          <div class="chat-contact-info">
+            <div class="chat-header-avatar" style="background: #5856d6;">
+              <img src="gama.jpg" onerror="this.style.display='none'" alt="Gama">
+              <span>G</span>
+            </div>
+            <div class="chat-contact-name">Gama</div>
+          </div>
+          <span style="width: 40px;"></span>
+        </div>
+        <div class="chat-scroll-area">
+          <div class="chat-date-divider">KEMARIN</div>
+          <div class="imsg-row"><div class="bubble-friend">Mav, lo di mana anjir?</div></div>
+          <div class="imsg-row"><div class="bubble-friend">Gue barusan ke tempat lo, pintunya digembok dari luar. Motor lo juga gak ada.</div></div>
+          <div class="imsg-row"><div class="bubble-friend">Mave angkat telepon gue sekali aja please! Jangan bikin anak-anak panik gini. Lo aman kan bro?!</div></div>
+        </div>
+      </div>
+
+      <!-- VIEW D: CHAT ARGA (DENGAN PP arga.jpg) -->
+      <div class="chat-detail-view" id="chatArgaView">
+        <div class="chat-header">
+          <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
+          <div class="chat-contact-info">
+            <div class="chat-header-avatar" style="background: #ff9500;">
+              <img src="arga.jpg" onerror="this.style.display='none'" alt="Arga">
+              <span>A</span>
+            </div>
+            <div class="chat-contact-name">Arga</div>
+          </div>
+          <span style="width: 40px;"></span>
+        </div>
+        <div class="chat-scroll-area">
+          <div class="chat-date-divider">2 HARI LALU</div>
+          <div class="imsg-row"><div class="bubble-friend">Mave, gue tadi sengaja mampir ke kantor tempat lo kerja kemarin.</div></div>
+          <div class="imsg-row"><div class="bubble-friend">Orang HR bilang lo gak pernah dateng buat tanda tangan kontrak baru.</div></div>
+          <div class="imsg-row"><div class="bubble-friend">Bro, lo kenapa? Gue tau lo lagi ada masalah berat, tapi tolong jangan telen semuanya sendirian. Kabarin kita ya Mav, gue mohon.</div></div>
+        </div>
+      </div>
+
+      <!-- VIEW E: CHAT JESTER (DENGAN PP jester.jpg) -->
+      <div class="chat-detail-view" id="chatJesterView">
+        <div class="chat-header">
+          <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
+          <div class="chat-contact-info">
+            <div class="chat-header-avatar" style="background: #30d158;">
+              <img src="jester.jpg" onerror="this.style.display='none'" alt="Jester">
+              <span>J</span>
+            </div>
+            <div class="chat-contact-name">Jester</div>
+          </div>
+          <span style="width: 40px;"></span>
+        </div>
+        <div class="chat-scroll-area">
+          <div class="chat-date-divider">3 HARI LALU</div>
+          <div class="imsg-row"><div class="bubble-friend">Mav, nyokap lo nelpon gue nanyain lo, beberapa hari pulang malam terus.</div></div>
+          <div class="imsg-row"><div class="bubble-friend">Gue gak ngasih tau apa-apa karena gue tau rumah lo lagi berantakan banget.</div></div>
+          <div class="imsg-row"><div class="bubble-friend">Tapi lo di mana sekarang, Mave? Kasih tanda kehidupan kek... Gue takut lo nekat lakuin hal aneh-aneh. Bales ya bro.</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- HOME BAR -->
+    <div class="home-indicator" onclick="goHome()"></div>
+  </div>
+
+  <script>
+    const SEVANTH_BIRTHDAY_PIN = "040705"; 
+    let enteredPin = "";
+
+    function showPasscode() {
+      document.getElementById('lockMain').style.display = 'none';
+      document.getElementById('passcodeView').style.display = 'flex';
+    }
+
+    function cancelPasscode() {
+      enteredPin = "";
+      updateDots();
+      document.getElementById('passcodeView').style.display = 'none';
+      document.getElementById('lockMain').style.display = 'block';
+    }
+
+    function pressKey(num) {
+      if (enteredPin.length < 6) {
+        enteredPin += num;
+        updateDots();
+        if (enteredPin.length === 6) setTimeout(checkPin, 150);
+      }
+    }
+
+    function deleteKey() {
+      enteredPin = enteredPin.slice(0, -1);
+      updateDots();
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, index) => {
+        if (index < enteredPin.length) dot.classList.add('filled');
+        else dot.classList.remove('filled');
+      });
+    }
+
+    function checkPin() {
+      if (enteredPin === SEVANTH_BIRTHDAY_PIN) {
+        document.getElementById('lockscreen').style.display = 'none';
+        document.getElementById('homescreen').style.display = 'block';
+      } else {
+        const dotsBox = document.getElementById('dotsContainer');
+        dotsBox.classList.add('shake');
+        setTimeout(() => {
+          dotsBox.classList.remove('shake');
+          enteredPin = "";
+          updateDots();
+        }, 400);
+      }
+    }
+
+    /* BUKA APLIKASI */
+    function openApp(appId) {
+      document.getElementById('homescreen').style.display = 'none';
+      document.getElementById(appId).style.display = 'flex';
+      if (appId === 'chatApp') {
+        backToInbox();
+      }
+    }
+
+    function goHome() {
+      document.getElementById('chatApp').style.display = 'none';
+      document.getElementById('homescreen').style.display = 'block';
+    }
+
+    /* NAVIGASI INBOX PESAN */
+    function openChatView(viewId) {
+      document.getElementById('inboxView').style.display = 'none';
+      document.querySelectorAll('.chat-detail-view').forEach(v => v.style.display = 'none');
+      document.getElementById(viewId).style.display = 'flex';
+    }
+
+    function backToInbox() {
+      document.querySelectorAll('.chat-detail-view').forEach(v => v.style.display = 'none');
+      document.getElementById('inboxView').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
