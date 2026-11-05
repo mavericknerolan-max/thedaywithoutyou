@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>What Maverick Left Behind</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -37,6 +37,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      transition: filter 0.2s;
     }
 
     @media (max-width: 480px) {
@@ -219,7 +220,7 @@
     .bg-chat { background: #1c73e8; color: #fff; }
     .bg-voice { background: #d9383a; color: #fff; }
     .bg-ig { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%); color: #fff; }
-    .bg-gallery { background: #4a4a52; color: #fff; }
+    .bg-notes { background: #e0a924; color: #fff; }
 
     .badge-unread {
       position: absolute; top: -4px; right: -4px;
@@ -376,7 +377,7 @@
       border-bottom-left-radius: 4px; align-self: flex-start; max-width: 80%;
     }
 
-    /* === 4. APP: VOICE MEMOS (3 FILE SUARA & NOTIF INTERAKTIF) === */
+    /* === 4. APP: VOICE MEMOS === */
     #voiceApp {
       background: #000;
       color: #fff;
@@ -435,7 +436,6 @@
     .voice-card.playing .wave-bar:nth-child(4) { animation-delay: 0.1s; }
     .voice-card.playing .wave-bar:nth-child(5) { animation-delay: 0.3s; }
 
-    /* NOTIFIKASI DROP-DOWN SAAT MENDENGARKAN VOICE MEMO */
     .voice-notif-container {
       position: absolute; top: 48px; left: 14px; right: 14px;
       z-index: 2500; display: flex; flex-direction: column; gap: 8px;
@@ -465,7 +465,6 @@
       margin-left: 4px; cursor: pointer; text-decoration: underline;
     }
 
-    /* MODAL KONFIRMASI BUKA INSTAGRAM (YES / NO) */
     #igPromptModal {
       display: none; position: absolute; inset: 0;
       background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
@@ -486,7 +485,7 @@
     .btn-no { background: #2c2c2e; color: #fff; }
     .btn-yes { background: #0a84ff; color: #fff; }
 
-    /* === 5. APP: INSTAGRAM PROFILE (PERSIS IG ASLI) === */
+    /* === 5. APP: INSTAGRAM PROFILE === */
     #instagramApp {
       background: #000;
       color: #fff;
@@ -494,6 +493,7 @@
       z-index: 200;
       flex-direction: column;
       overflow-y: auto;
+      position: relative;
     }
 
     .ig-header-bar {
@@ -527,7 +527,6 @@
     .ig-bio strong { display: block; margin-bottom: 2px; }
     .ig-bio-tag { color: #8e8e93; font-size: 11.5px; margin-bottom: 4px; }
 
-    /* 3X3 PHOTO GRID */
     .ig-grid-tab {
       display: flex; justify-content: center; padding: 10px 0;
       border-top: 1px solid #1c1c1e; border-bottom: 1px solid #1c1c1e;
@@ -545,7 +544,6 @@
     }
     .ig-grid-item:active img { transform: scale(0.96); }
 
-    /* MODAL POST DETAIL INSTAGRAM */
     #igPostModal {
       display: none; position: absolute; inset: 0;
       background: rgba(0,0,0,0.92); backdrop-filter: blur(15px);
@@ -566,6 +564,209 @@
     .post-caption-box { font-size: 12.8px; line-height: 1.6; color: #ddd; text-align: justify; }
     .post-caption-box strong { color: #fff; margin-right: 5px; }
 
+    .ig-notes-notif {
+      position: absolute; top: 50px; left: 14px; right: 14px;
+      background: rgba(30, 26, 38, 0.95); backdrop-filter: blur(25px);
+      border-radius: 20px; padding: 14px 16px; color: #fff;
+      border: 1px solid rgba(224, 169, 36, 0.4);
+      box-shadow: 0 10px 35px rgba(0,0,0,0.7);
+      z-index: 4000; animation: slideDown 0.4s ease; display: none;
+    }
+    .ig-notes-head { font-size: 11px; font-weight: 700; color: #e0a924; margin-bottom: 3px; display: flex; justify-content: space-between; }
+    .ig-notes-body { font-size: 12.5px; color: #eee; line-height: 1.4; margin-bottom: 10px; }
+    .ig-notes-action { display: flex; gap: 8px; justify-content: flex-end; }
+    .ig-notes-btn {
+      padding: 6px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; border: none; cursor: pointer;
+    }
+
+    /* === 6. APP: CATATAN === */
+    #notesApp {
+      background: #000;
+      color: #fff;
+      display: none;
+      z-index: 200;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .notes-header {
+      padding: 48px 18px 12px;
+      background: #121214;
+      border-bottom: 1px solid #1c1c1e;
+    }
+    .notes-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .notes-folder-title { font-size: 28px; font-weight: 700; color: #e0a924; }
+    .notes-count-sub { font-size: 11px; color: #8e8e93; margin-top: 2px; }
+
+    .notes-scroll-grid {
+      flex: 1; overflow-y: auto; padding: 14px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+
+    .note-square-card {
+      background: #1c1c1e;
+      border: 1px solid #2c2c2e;
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .note-square-card:active { transform: scale(0.96); border-color: #e0a924; }
+    
+    .note-card-img {
+      width: 100%; height: 110px; object-fit: cover; background: #262626; display: block;
+    }
+    .note-card-content {
+      padding: 10px 12px 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .note-card-date {
+      font-size: 10px; font-weight: 700; color: #e0a924; letter-spacing: 0.5px; margin-bottom: 3px;
+    }
+    .note-card-title {
+      font-size: 12.5px; font-weight: 700; color: #fff; line-height: 1.35; margin-bottom: 4px;
+    }
+    .note-card-snippet {
+      font-size: 10.5px; color: #888; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.35;
+    }
+
+    #noteReaderModal {
+      display: none; position: absolute; inset: 0;
+      background: #0d0c10; z-index: 3500; flex-direction: column; overflow-y: auto;
+    }
+    .reader-header {
+      padding: 48px 16px 14px; display: flex; justify-content: space-between; align-items: center;
+      background: #141318; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 10;
+    }
+    .reader-body { padding: 20px 18px 40px; }
+    .reader-img {
+      width: 100%; height: 210px; object-fit: cover; border-radius: 16px; margin-bottom: 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    }
+    .reader-date {
+      font-size: 11.5px; font-weight: 700; color: #e0a924; letter-spacing: 1px; margin-bottom: 6px;
+    }
+    .reader-title {
+      font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: #fff; margin-bottom: 18px; line-height: 1.3;
+    }
+    .reader-poem {
+      font-family: 'Playfair Display', serif; font-size: 13.8px; line-height: 1.95; color: #d6d3db;
+      text-align: justify; font-style: italic; white-space: pre-line;
+    }
+    .reader-sign {
+      margin-top: 25px; text-align: right; font-size: 12px; color: #8e8e93; font-style: normal;
+    }
+
+    .open-video-trigger-btn {
+      width: 100%; margin-top: 25px; padding: 14px;
+      background: #ff3b30; color: #fff; border: none;
+      border-radius: 16px; font-weight: 700; font-size: 13px;
+      cursor: pointer; box-shadow: 0 6px 20px rgba(255, 59, 48, 0.4);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+
+    #videoAlertModal {
+      display: none; position: absolute; inset: 0;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(18px);
+      z-index: 4500; align-items: center; justify-content: center; padding: 22px;
+      animation: fadeIn 0.3s ease;
+    }
+    .video-alert-box {
+      background: #18151f; border-radius: 24px; padding: 22px 18px;
+      width: 100%; max-width: 320px; text-align: center;
+      border: 1.5px solid rgba(255, 69, 58, 0.4);
+      box-shadow: 0 20px 50px rgba(255, 69, 58, 0.25);
+    }
+    .video-alert-icon { font-size: 34px; margin-bottom: 10px; }
+    .video-alert-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .video-alert-desc { font-size: 12px; color: #bbb; line-height: 1.5; margin-bottom: 18px; text-align: justify; background: #221e2b; padding: 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.06); }
+    .video-alert-actions { display: flex; gap: 10px; }
+    .video-alert-btn {
+      flex: 1; padding: 12px; border-radius: 14px; font-size: 12.5px; font-weight: 700; border: none; cursor: pointer;
+    }
+    .btn-alert-no { background: #2c2936; color: #ccc; }
+    .btn-alert-yes { background: #ff3b30; color: #fff; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4); }
+
+    /* === 7. APP: PEMUTAR VIDEO TERAKHIR === */
+    #videoApp {
+      background: #000;
+      color: #fff;
+      display: none;
+      z-index: 200;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .video-header-bar {
+      padding: 48px 16px 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: #111; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 10;
+    }
+
+    .video-view-body { padding: 16px 18px 40px; }
+    
+    .video-player-wrap {
+      width: 100%; border-radius: 20px; overflow: hidden;
+      background: #111; margin-bottom: 16px; border: 1px solid #333;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      position: relative;
+    }
+    .video-player-wrap video {
+      width: 100%; display: block; max-height: 380px; object-fit: cover;
+    }
+
+    .video-meta-box {
+      background: #16141d; border-radius: 18px; padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 16px;
+    }
+    .video-meta-tag {
+      font-size: 11px; font-weight: 700; color: #ff3b30; letter-spacing: 0.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 5px;
+    }
+    .video-meta-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .video-meta-sub { font-size: 11px; color: #8e8e93; line-height: 1.4; }
+
+    .video-letter-body {
+      background: #1a1722; border-radius: 18px; padding: 16px;
+      border-left: 3px solid #ff3b30; font-size: 12.8px; line-height: 1.75;
+      color: #d1ced9; text-align: justify;
+    }
+
+    /* === 8. EFEK CRASH, GLITCH, DAN SHUTDOWN === */
+    #crashOverlay {
+      display: none; position: absolute; inset: 0;
+      background: #000; z-index: 9999;
+      flex-direction: column; align-items: center; justify-content: center;
+      color: #fff; text-align: center; padding: 25px;
+    }
+
+    /* ANIMASI GLITCH SCREEN JITTER */
+    .glitching-screen {
+      animation: screenGlitch 0.12s infinite !important;
+    }
+
+    @keyframes screenGlitch {
+      0% { transform: translate(0, 0); filter: hue-rotate(0deg); }
+      20% { transform: translate(-5px, 3px); filter: invert(0.85) contrast(150%); }
+      40% { transform: translate(4px, -3px); filter: hue-rotate(90deg) brightness(1.5); }
+      60% { transform: translate(-3px, 2px); filter: invert(0.3); }
+      80% { transform: translate(3px, -1px); filter: contrast(200%); }
+      100% { transform: translate(0, 0); filter: none; }
+    }
+
+    .shutdown-spinner {
+      width: 34px; height: 34px; border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: #ff3b30; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .shutdown-msg {
+      font-family: monospace; font-size: 12px; color: #ff3b30;
+      letter-spacing: 1px; line-height: 1.6;
+    }
+
     .home-indicator {
       width: 130px; height: 5px; background: #fff; border-radius: 10px;
       position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); z-index: 1000; cursor: pointer;
@@ -575,13 +776,17 @@
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
     @keyframes slideDown { from { transform: translateY(-40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes waveMove { 0% { height: 4px; } 100% { height: 18px; } }
     .shake { animation: shake 0.35s; }
   </style>
 </head>
 <body>
 
-  <!-- AUDIO PLAYERS UNTUK 3 FILE SUARA MAVE -->
+  <!-- BGM UTAMA (bgm.mp3) -->
+  <audio id="bgmMusic" src="bgm.mp3" loop></audio>
+
+  <!-- AUDIO VOICE MEMOS -->
   <audio id="audio1" src="suara1.mp3"></audio>
   <audio id="audio2" src="suara2.mp3"></audio>
   <audio id="audio3" src="suara3.mp3"></audio>
@@ -591,7 +796,7 @@
 
     <div class="status-bar" id="statusBar">
       <span>03:14</span>
-      <span class="battery-crit">⚡ 3%</span>
+      <span class="battery-crit" id="batteryIndicator">⚡ 3%</span>
     </div>
 
     <!-- 1. LOCKSCREEN -->
@@ -663,9 +868,9 @@
           <div class="app-icon bg-ig">📸</div>
           <div class="app-name">Instagram</div>
         </div>
-        <div class="app-item" onclick="alert('Petunjuk berikutnya ada di Instagram!')">
-          <div class="app-icon bg-gallery">🗑️</div>
-          <div class="app-name">Baru Dihapus</div>
+        <div class="app-item" onclick="openApp('notesApp')">
+          <div class="app-icon bg-notes">📝</div>
+          <div class="app-name">Catatan</div>
         </div>
       </div>
     </div>
@@ -745,7 +950,6 @@
         </div>
       </div>
 
-      <!-- CHAT DETAIL: safe place -->
       <div class="chat-detail-view" id="chatSafePlaceView">
         <div class="chat-header">
           <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
@@ -813,7 +1017,6 @@
         </div>
       </div>
 
-      <!-- CHAT DETAIL: GAMA, ARGA, JESTER -->
       <div class="chat-detail-view" id="chatGamaView">
         <div class="chat-header">
           <span class="back-btn" onclick="backToInbox()">‹ Messages</span>
@@ -834,7 +1037,7 @@
         </div>
         <div class="chat-scroll-area">
           <div class="chat-date-divider">2 HARI LALU</div>
-          <div class="imsg-row"><div class="bubble-friend">Mave, orang HR kantor baru bilang lo gak pernah masuk buat ttd kontrak. Lo kenapa? Jangan sendirian please.</div></div>
+          <div class="imsg-row"><div class="bubble-friend">Mave, orang HR kantor baru bilang lo gak pernah masuk buat ttd kontrak baru. Lo kenapa? Jangan sendirian please.</div></div>
         </div>
       </div>
 
@@ -851,12 +1054,10 @@
       </div>
     </div>
 
-    <!-- 4. APP: VOICE MEMOS (DENGAN NOTIF DOKTER & INSTAGRAM) -->
+    <!-- 4. APP: VOICE MEMOS -->
     <div class="screen" id="voiceApp">
-      <!-- NOTIFIKASI DROP-DOWN INTERAKTIF -->
       <div class="voice-notif-container" id="voiceNotifBox"></div>
 
-      <!-- MODAL PROMPT BUKA INSTAGRAM (YES / NO) -->
       <div id="igPromptModal">
         <div class="prompt-box">
           <h4>Buka Instagram?</h4>
@@ -874,7 +1075,6 @@
       </div>
 
       <div class="voice-list">
-        <!-- REKAMAN 1 (suara1.mp3) -->
         <div class="voice-card" id="card1">
           <div class="voice-top">
             <div class="voice-name">14 Okt - Jam 02:44 (Rumah Berisik)</div>
@@ -889,7 +1089,6 @@
           </div>
         </div>
 
-        <!-- REKAMAN 2 (suara2.mp3) -->
         <div class="voice-card" id="card2">
           <div class="voice-top">
             <div class="voice-name">28 Okt - Jam 03:12 (Dada Sesak)</div>
@@ -904,7 +1103,6 @@
           </div>
         </div>
 
-        <!-- REKAMAN 3 (suara3.mp3) -->
         <div class="voice-card" id="card3">
           <div class="voice-top">
             <div class="voice-name">02 Nov - Jam 01:05 (Pamit)</div>
@@ -921,16 +1119,25 @@
       </div>
     </div>
 
-    <!-- 5. APP: INSTAGRAM PROFILE (PERSIS IG ASLI) -->
+    <!-- 5. APP: INSTAGRAM PROFILE -->
     <div class="screen" id="instagramApp">
-      <!-- HEADER INSTAGRAM -->
+      <div class="ig-notes-notif" id="igNotesNotif">
+        <div class="ig-notes-head"><span>NOTES • BARU SAJA</span><span>Baru Saja</span></div>
+        <div class="ig-notes-body">
+          Catatan terbaru telah terupdate: <strong>"11 Okt - Hari ke-300: Titik Terakhir Mbull"</strong>. Ingin melihatnya?
+        </div>
+        <div class="ig-notes-action">
+          <button class="ig-notes-btn" style="background:#2c2c2e; color:#fff;" onclick="dismissNotesNotif()">Nanti</button>
+          <button class="ig-notes-btn" style="background:#e0a924; color:#000;" onclick="goToNotesApp()">Iya</button>
+        </div>
+      </div>
+
       <div class="ig-header-bar">
         <span class="back-btn" onclick="goHome()" style="color: #fff; font-size: 16px;">‹</span>
         <div class="ig-username-header">🔒 maverick.al ▾</div>
         <span style="font-size: 18px; color: #fff;">≡</span>
       </div>
 
-      <!-- PROFIL SECTION -->
       <div class="ig-profile-section">
         <div class="ig-top-row">
           <div class="ig-avatar-ring">
@@ -955,7 +1162,6 @@
         <span class="ig-grid-icon">▦</span>
       </div>
 
-      <!-- 3X3 POST GRID (9 FOTO ig1.jpg s/d ig9.jpg) -->
       <div class="ig-photo-grid">
         <div class="ig-grid-item" onclick="openPost(1)"><img src="ig1.jpg" onerror="this.src='foto1.jpeg'" alt="Post 1"></div>
         <div class="ig-grid-item" onclick="openPost(2)"><img src="ig2.jpg" onerror="this.src='foto2.jpeg'" alt="Post 2"></div>
@@ -968,7 +1174,6 @@
         <div class="ig-grid-item" onclick="openPost(9)"><img src="ig9.jpg" onerror="this.src='foto4.jpeg'" alt="Post 9"></div>
       </div>
 
-      <!-- MODAL POST DETAIL INSTAGRAM -->
       <div id="igPostModal">
         <div class="post-modal-header">
           <div class="post-user-info">
@@ -987,6 +1192,111 @@
       </div>
     </div>
 
+    <!-- === 6. APP: CATATAN === */ -->
+    <div class="screen" id="notesApp">
+      <div id="videoAlertModal">
+        <div class="video-alert-box">
+          <div class="video-alert-icon">⚠️</div>
+          <div class="video-alert-title">PESAN OTOMATIS TERJADWAL</div>
+          <div class="video-alert-desc">
+            Sebuah berkas video terenkripsi dikirimkan secara otomatis oleh server karena perangkat tidak mendeteksi aktivitas fisik pemilik selama 30 hari.<br><br>
+            <strong>PERINGATAN:</strong> Ini adalah video terakhir yang direkam oleh Maverick (Mbull) sebelum ia memilih untuk menghilang selamanya.<br><br>
+            Apakah Anda ingin membukanya sekarang?
+          </div>
+          <div class="video-alert-actions">
+            <button class="video-alert-btn btn-alert-no" onclick="closeVideoAlert()">Tidak</button>
+            <button class="video-alert-btn btn-alert-yes" onclick="goToVideoApp()">Iya, Buka Video</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-header">
+        <div class="notes-top-bar">
+          <span class="back-btn" onclick="goHome()">‹ Home</span>
+          <span style="font-size: 14px; font-weight: 600; color: #e0a924;">Edit</span>
+        </div>
+        <div class="notes-folder-title">Arsip Tanggal 11</div>
+        <div class="notes-count-sub">10 Catatan Penyesalan • Dibuat oleh Mbull</div>
+      </div>
+
+      <div class="notes-scroll-grid">
+        <div class="note-square-card" onclick="openNoteReader(1)"><img src="note1.jpg" onerror="this.src='foto1.jpeg'" class="note-card-img" alt="Bulan 1"><div class="note-card-content"><div class="note-card-date">11 JANUARI • BULAN 1</div><div class="note-card-title">Dingin yang Belum Bernama</div><div class="note-card-snippet">Mbull kira melepas Abang adalah jalan keluar dari rasa lelah...</div></div></div>
+        <div class="note-square-card" onclick="openNoteReader(2)"><img src="note2.jpg" onerror="this.src='foto2.jpeg'" class="note-card-img" alt="Bulan 2"><div class="note-card-content"><div class="note-card-date">11 FEBRUARI • BULAN 2</div><div class="note-card-title">Layar yang Membisu</div><div class="note-card-snippet">Genap enam puluh hari tanpa satu pun suara Abang...</div></div></div>
+        <div class="note-square-card" onclick="openNoteReader(3)"><img src="note3.jpg" onerror="this.src='foto3.jpeg'" class="note-card-img" alt="Bulan 3"><div class="note-card-content"><div class="note-card-date">11 MARET • BULAN 3</div><div class="note-card-title">Penyesalan yang Merayap</div><div class="note-card-snippet">Di divisi baru ini Mbull tersiksa, Mbull sadar Mbull bodoh...</div></div></div>
+        <div class="note-square-card" onclick="openNoteReader(4)"><img src="note4.jpg" onerror="this.src='foto4.jpeg'" class="note-card-img" alt="Bulan 4"><div class="note-card-content"><div class="note-card-date">11 APRIL • BULAN 4</div><div class="note-card-title">Menghancurkan Rumah Sendiri</div><div class="note-card-snippet">Mbull menangis di halte jam dua pagi saat orang tua ribut...</div></div></div>
+        <div class="note-square-card" onclick="openNoteReader(5)"><img src="note5.jpg" onerror="this.src='foto5.jpeg'" class="note-card-img" alt="Bulan 5"><div class="note-card-content"><div class="note-card-date">11 MEI • BULAN 5</div><div class="note-card-title">Separuh Napas yang Hilang</div><div class="note-card-snippet">Seratus lima puluh hari rasa bersalah ini bukannya mengering...</div></div></div>
+        <div class="note-square-card" onclick="openNoteReader(6)"><img src="note6.jpg" onerror="this.src='foto1.jpeg'" class="note-card-img" alt="Bulan 6"><div class="note-card-content"><div class="note-card-date">11 JUNI • BULAN 6</div><div class="note-card-title">Mbull yang Pengecut</div><div class="note-card-snippet">Menatap jendela kereta malam, mengapa dulu Mbull menyerah...</div></div></div>
+        <div class="note-square-card" onclick="openNoteReader(7)"><img src="note7.jpg" onerror="this.src='foto2.jpeg'" class="note-card-img" alt="Bulan 7"><div class="note-card-content"><div class="note-card-date">11 JULI • BULAN 7</div><div class="note-card-title">Dosis Obat & Hati yang Remuk</div><div class="note-card-snippet">Berapa pun butir penenang yang Mbull telan, Mbull tetap sekarat...</div></div></div>
+        <div class="note-square-card" onclick="openNoteReader(8)"><img src="note8.jpg" onerror="this.src='foto3.jpeg'" class="note-card-img" alt="Bulan 8"><div class="note-card-content"><div class="note-card-date">11 AGUSTUS • BULAN 8</div><div class="note-card-title">Abang Sudah Bahagia</div><div class="note-card-snippet">Mendengar kabar Abang punya pengganti, dada Mbull koyak...</div></div></div>
+        <div class="note-square-card" onclick="openNoteReader(9)"><img src="note9.jpg" onerror="this.src='foto4.jpeg'" class="note-card-img" alt="Bulan 9"><div class="note-card-content"><div class="note-card-date">11 SEPTEMBER • BULAN 9</div><div class="note-card-title">Kehilangan Cahaya Diri</div><div class="note-card-snippet">Mbull tidak lagi mengenali sosok di cermin, semuanya hilang...</div></div></div>
+        <div class="note-square-card" onclick="openNoteReader(10)"><img src="note10.jpg" onerror="this.src='foto5.jpeg'" class="note-card-img" alt="Bulan 10"><div class="note-card-content"><div class="note-card-date">11 OKTOBER • BULAN 10</div><div class="note-card-title">Titik Terakhir Mbull</div><div class="note-card-snippet">Genap sepuluh bulan. Maafkan Mbull yang terlambat memohon...</div></div></div>
+      </div>
+
+      <div id="noteReaderModal">
+        <div class="reader-header">
+          <span class="back-btn" onclick="closeNoteReader()">‹ Catatan</span>
+          <span style="font-size: 13px; font-weight: 700; color: #e0a924;">Sajak Tanggal 11</span>
+          <span style="width: 40px;"></span>
+        </div>
+        <div class="reader-body">
+          <img id="readerImg" src="" class="reader-img" alt="Note Photo">
+          <div class="reader-date" id="readerDate"></div>
+          <div class="reader-title" id="readerTitle"></div>
+          <div class="reader-poem" id="readerPoem"></div>
+          <div class="reader-sign">— Dari Mbull yang tenggelam dalam penyesalan</div>
+
+          <div id="note10VideoTriggerArea" style="display: none;">
+            <button class="open-video-trigger-btn" onclick="triggerVideoAlertModal()">
+              <span>🎥</span> Buka Berkas Video Terakhir Mbull
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- === 7. APP: PEMUTAR VIDEO TERAKHIR === -->
+    <div class="screen" id="videoApp">
+      <div class="video-header-bar">
+        <span class="back-btn" onclick="goHome()" style="color: #fff; font-size: 14px;">‹ Home</span>
+        <span style="font-size: 13px; font-weight: 700; color: #ff3b30;">DECRYPTED VIDEO FEED</span>
+        <span style="width: 40px;"></span>
+      </div>
+
+      <div class="video-view-body">
+        <div class="video-player-wrap">
+          <!-- VIDEO PLAYER (last_video.mp4) -->
+          <video id="lastVideoPlayer" src="last_video.mp4" poster="note10.jpg" playsinline controls></video>
+        </div>
+
+        <div class="video-meta-box">
+          <div class="video-meta-tag">
+            <span>🔴</span> MAVERICK_FINAL_LOG_0314.MP4
+          </div>
+          <div class="video-meta-title">Rekaman Terakhir Sebelum Menghilang</div>
+          <div class="video-meta-sub">
+            Direkam pada: 11 Oktober, 03:14 AM<br>
+            Status Pengirim: Signal Lost • Device Left Behind
+          </div>
+        </div>
+
+        <div class="video-letter-body">
+          "Abang... kalau Abang beneran nonton video ini, berarti Mbull udah gak ada lagi di sini, atau mungkin... Mbull udah gak ada lagi di dunia ini.<br><br>
+          Maafin Mbull ya Abang... Mbull udah coba sekuat tenaga keliling ke banyak tempat buat ngilangin sesak dan rasa bersalah ini, tapi Mbull kalah telak. Jaga diri Abang baik-baik ya, jangan telat makan lagi.<br><br>
+          Terima kasih pernah jadi <em>safe place</em> paling indah yang pernah Mbull punya. Mbull sayang Abang... sampai di titik paling akhir."
+        </div>
+      </div>
+    </div>
+
+    <!-- === 8. CRASH, GLITCH, DAN SHUT DOWN MATI TOTAL === -->
+    <div id="crashOverlay">
+      <div class="shutdown-spinner"></div>
+      <div class="shutdown-msg" id="crashText">
+        [!] CRITICAL KERNEL PANIC<br>
+        BUFFERING CORRUPTED MEMORY...<br>
+        BATTERY 0% • SHUTTING DOWN
+      </div>
+    </div>
+
     <!-- HOME BAR -->
     <div class="home-indicator" onclick="goHome()"></div>
   </div>
@@ -996,8 +1306,8 @@
     let enteredPin = "";
     let activeAudioNum = null;
     let notifTriggered = false;
+    let igNotesTriggered = false;
 
-    /* 9 CAPTION MENYAYAT HATI UNTUK INSTAGRAM */
     const igCaptions = {
       1: "Mbull naik kereta paling malam ke kota yang dulu pernah Abang ceritain. Mbull kira dengan ngeliat pemandangan baru, suara Abang di kepala Mbull bakal hilang. Ternyata enggak. Mbull malah nangis di dekat jendela, ngerasa asing banget sendirian tanpa Abang.",
       2: "Dermaga ini dingin banget, Abang. Kata orang, deburan ombak laut bisa nelen semua rasa sakit. Tapi kenapa pas Mbull berdiri di sini, yang kedengeran justru suara Abang yang manggil 'Mbull' di telinga Mbull?",
@@ -1008,6 +1318,88 @@
       7: "Bahkan di tempat paling sunyi yang Mbull temuin, rasa rindu Mbull ke Abang tetap berisik. Mbull nyoba basuh semua luka ini ke mana-mana, tapi airnya gak pernah cukup buat ngilangin nama Abang dari dada Mbull.",
       8: "Jam 3 pagi di kota antah berantah. Gak ada rumah buat Mbull pulang. Mbull baru sadar, sejauh apa pun Mbull kabur, arah Mbull dari dulu cuma satu: Abang. Dan pintu itu udah kekunci selamanya.",
       9: "Kalau suatu hari Abang nemu arsip ini... Mbull cuma mau Abang tahu: Mbull udah berjuang keliling ke banyak tempat buat membasuh semua rasa rindu ini, tapi Mbull kalah telak. Mbull tetep sayang sama Abang, sampai di hembusan napas paling akhir."
+    };
+
+    const notesData = {
+      1: {
+        date: "11 JANUARI • BULAN KE-1",
+        title: "Hari ke-30: Dingin yang Belum Bernama",
+        poem: `Abang, genap tiga puluh malam Mbull lalui dengan kesunyian yang mencekik. 
+Dulu Mbull kira, melepaskan genggaman Abang adalah jalan keluar paling adil untuk rasa lelah dan burnout yang Mbull pikul sendiri. Mbull begitu bodoh, Abang. Mbull begitu naif mengira bahwa sepi akan mendewasakan Mbull, padahal kenyataannya sepi ini meremukkan tulang-tulang Mbull perlahan. 
+
+Malam ini kamar Mbull sedingin dasar palung terdalam. Setiap kali embusan angin membentur jendela, Mbull refleks menoleh ke layar ponsel, menunggu dering telepon dari Abang yang biasa menenangkan napas gemetar Mbull. Tidak ada apa-apa, Abang. Hanya kegelapan pekat yang menertawakan kebodohan Mbull karena telah melepaskan pelindung terbaik yang pernah semesta kirimkan.`
+      },
+      2: {
+        date: "11 FEBRUARI • BULAN KE-2",
+        title: "Hari ke-60: Layar yang Membisu",
+        poem: `Enam puluh hari berlalu di tanggal sebelas ini, dan penyesalan itu mulai berubah wujud menjadi duri yang menancap di ulu hati. 
+Mbull menatap roomchat kita yang kini membeku seperti makam tua. Betapa egoisnya Mbull yang dulu sempat merasa sesak dengan segala kepedulian Abang, padahal di luar sana, tak ada satu pun manusia yang peduli apakah Mbull sudah makan atau belum, apakah Mbull menangis lagi malam ini atau tertidur pulas.
+
+Mbull merindukan panggilan 'Mbull' dari bibir Abang. Panggilan yang dulu membuat Mbull merasa utuh dan berharga. Kini Mbull sadar, tanpa kehadiran Abang di ujung telepon, Mbull hanyalah sosok rapuh yang tersesat di bawah hujan tanpa payung.`
+      },
+      3: {
+        date: "11 MARET • BULAN KE-3",
+        title: "Hari ke-90: Surat-Surat yang Mengering Jadi Abu",
+        poem: `Abang, di divisi baru yang dulu kita impikan bersama, Mbull berhasil melangkah masuk. Tapi mengapa setiap pencapaian ini terasa begitu hampa dan pahit? Mengapa ruangan ber-AC ini justru terasa seperti penjara yang menyiksa?
+
+Mbull duduk di sudut meja kantor, menatap orang-orang yang saling bertukar tawa. Hati Mbull berteriak memanggil nama Abang. Penyesalan ini merayap semakin liar di dalam pembuluh darah Mbull. Mengapa Mbull melepas tangan yang paling tulus menyeka air mata Mbull hanya demi mengejar ilusi kestabilan diri? Mbull menukar rumah Mbull demi sebuah ruangan kosong yang tak bernyawa.`
+      },
+      4: {
+        date: "11 APRIL • BULAN KE-4",
+        title: "Hari ke-120: Menghancurkan Rumah Sendiri",
+        poem: `Tepat empat bulan sejak kepergian Abang, dan rumah ini kembali menjadi neraka yang membakar. 
+Piring-piring kembali pecah di lantai dapur tadi malam, makian papa dan tangisan mama menembus dinding kamar Mbull. Dan untuk pertama kalinya dalam empat bulan, Mbull lari keluar rumah jam dua pagi di bawah gerimis yang menusuk kulit.
+
+Mbull duduk di bangku halte yang basah, memeluk kedua lutut Mbull sendiri. Di detik itu, dada Mbull hancur berkeping-keping oleh kenyataan yang paling kejam: Mbull sendiri yang telah menghancurkan satu-satunya tempat pulang Mbull. Mbull sendiri yang menutup pintu 'safe place' itu. Dan kini, Mbull pantas kedinginan sendirian di tengah malam tanpa pelukan Abang.`
+      },
+      5: {
+        date: "11 MEI • BULAN KE-5",
+        title: "Hari ke-150: Separuh Napas yang Hilang",
+        poem: `Seratus lima puluh hari. Mengapa orang-orang bilang waktu akan menyembuhkan luka? Bagi Mbull, waktu hanyalah pisau tumpul yang mengikis kewarasan Mbull sedikit demi sedikit setiap harinya.
+
+Rasa bersalah Mbull pada Abang sudah menggunung hingga Mbull merasa tak pantas lagi menghirup udara dengan tenang. Mbull teringat bagaimana Abang dulu selalu mengalah, bagaimana Abang menelan egonya demi mendengar tangisan Mbull yang tak berujung. Mengapa Mbull begitu jahat pada orang yang paling mencintai Mbull? Maafkan Mbull, Abang... maafkan Mbull yang terlalu terlambat menyadari arti sebuah ketulusan.`
+      },
+      6: {
+        date: "11 JUNI • BULAN KE-6",
+        title: "Hari ke-180: Mbull yang Pengecut",
+        poem: `Genap setengah tahun di tanggal sebelas ini. Mbull memutuskan menaiki kereta malam ke luar kota, menatap bayangan wajah Mbull sendiri di pantulan kaca jendela yang temaram. 
+
+Mata Mbull sembap, kantung mata Mbull menghitam, dan pandangan Mbull kosong. Mbull bertanya pada diri Mbull sendiri di tengah gemuruh roda kereta: mengapa Mbull begitu pengecut? Mengapa hari itu Mbull tidak bersujud di hadapan Abang, memohon agar Abang jangan pernah melepaskan tangan Mbull? Mengapa Mbull membiarkan takdir memisahkan kita saat jiwa Mbull seutuhnya tertinggal di genggaman Abang?`
+      },
+      7: {
+        date: "11 JULI • BULAN KE-7",
+        title: "Hari ke-210: Dosis Obat & Hati yang Remuk",
+        poem: `Dua ratus sepuluh hari tanpa kabar dari Abang. 
+Meja kecil di samping ranjang Mbull kini dipenuhi botol-botol obat penenang yang resepnya terus dinaikkan oleh dokter. Tapi tak ada satu pun pil pahit itu yang mampu menenangkan gemuruh badai di dalam dada Mbull. 
+
+Dokter bilang Mbull mengalami depresi berat dan penolakan terhadap kenyataan. Tapi dokter tidak tahu bahwa satu-satunya obat penawar yang Mbull butuhkan hanyalah usapan lembut di kepala dan bisikan pelan: 'Tenang Mbull, Abang ada di sini.' Namun tangan itu sudah tiada, dan Mbull perlahan membusuk di ranjang yang dingin ini.`
+      },
+      8: {
+        date: "11 AGUSTUS • BULAN KE-8",
+        title: "Hari ke-240: Abang Sudah Bahagia",
+        poem: `Hari ini tanggal sebelas, dan dunia Mbull runtuh seutuhnya ke tanah. 
+Mbull mendengar kabar itu. Mbull melihat secercah kabar bahwa Abang kini telah menemukan seseorang yang baru... seseorang yang mampu membuat senyum Abang kembali merekah di kejauhan sana.
+
+Dada Mbull terasa dicabik-cabik tanpa ampun, namun di antara air mata yang membasahi bantal, Mbull tersenyum getir. Abang berhak bahagia. Abang berhak mendapatkan pasangan yang utuh, bukan sosok rusak dan penuh beban seperti Mbull. Mbull yang telah membuang permata paling berharga, maka biarlah Mbull sendiri yang tenggelam di lumpur penyesalan ini selamanya.`
+      },
+      9: {
+        date: "11 SEPTEMBER • BULAN KE-9",
+        title: "Hari ke-270: Kehilangan Cahaya Diri",
+        poem: `Sembilan bulan berpisah, dan Mbull sudah tidak lagi mengenali siapa yang sedang menatap Mbull dari balik cermin kamar mandi. 
+Kilau di mata Mbull telah padam sepenuhnya. Tawa ceria yang dulu biasa Abang puji kini musnah, digantikan oleh kehampaan yang sunyi dan tatapan mayat hidup.
+
+Mbull telah berkeliling ke pantai, ke puncak gunung, ke stasiun-stasiun terasing, berharap deburan ombak dan angin dingin bisa membasuh rasa rindu dan rasa bersalah ini. Namun semakin jauh Mbull berlari, semakin keras nama Abang bergema di rongga dada Mbull. Mbull kalah, Abang. Mbull kalah telak oleh cinta Mbull sendiri.`
+      },
+      10: {
+        date: "11 OKTOBER • BULAN KE-10",
+        title: "Hari ke-300: Titik Terakhir Mbull",
+        poem: `Tepat tiga ratus hari. Tepat sepuluh bulan perpisahan kita di tanggal sebelas malam ini. 
+Napas Mbull sudah terasa begitu berat, dan baterai ponsel ini tersisa tiga persen—seperti sisa hidup Mbull yang tinggal menunggu detik-detik padamnya.
+
+Jika suatu hari ponsel ini sampai di tangan Abang, dan Abang membaca seluruh lembar catatan ini... ketahuilah bahwa tidak ada sedetik pun dalam tiga ratus hari ini di mana Mbull berhenti mencintai Abang. Penyesalan terbesar dalam seluruh napas hidup Mbull adalah melepaskan Abang hari itu.
+
+Terima kasih pernah menjadi 'safe place' terindah bagi anak yang rusak ini. Berbahagialah di sana, Abang. Biarkan Mbull tertidur dengan tenang bersama seluruh rindu yang tak pernah sempat Mbull sampaikan.`
+      }
     };
 
     function showPasscode() {
@@ -1047,6 +1439,12 @@
       if (enteredPin === SEVANTH_BIRTHDAY_PIN) {
         document.getElementById('lockscreen').style.display = 'none';
         document.getElementById('homescreen').style.display = 'block';
+
+        // 1. PLAY BGM OTOMATIS SETELAH LOCKSCREEN TERBUKA
+        const bgm = document.getElementById('bgmMusic');
+        if (bgm) {
+          bgm.play().catch(e => console.log('BGM siap, tunggu interaksi atau upload bgm.mp3'));
+        }
       } else {
         const dotsBox = document.getElementById('dotsContainer');
         dotsBox.classList.add('shake');
@@ -1058,11 +1456,17 @@
       }
     }
 
-    /* BUKA APLIKASI */
     function openApp(appId) {
       document.getElementById('homescreen').style.display = 'none';
       document.getElementById(appId).style.display = 'flex';
       if (appId === 'chatApp') backToInbox();
+
+      if (appId === 'instagramApp' && !igNotesTriggered) {
+        igNotesTriggered = true;
+        setTimeout(() => {
+          document.getElementById('igNotesNotif').style.display = 'block';
+        }, 3500);
+      }
     }
 
     function goHome() {
@@ -1072,9 +1476,19 @@
       document.getElementById('homescreen').style.display = 'block';
       stopAllAudio();
       closePostModal();
+      closeNoteReader();
+      closeVideoAlert();
+
+      const vid = document.getElementById('lastVideoPlayer');
+      if (vid) vid.pause();
+
+      // RESUME BGM JIKA KEMBALI KE HOME
+      const bgm = document.getElementById('bgmMusic');
+      if (bgm && bgm.paused) {
+        bgm.play().catch(e => console.log(e));
+      }
     }
 
-    /* PESAN NAVIGASI */
     function openChatView(viewId) {
       document.getElementById('inboxView').style.display = 'none';
       document.querySelectorAll('.chat-detail-view').forEach(v => v.style.display = 'none');
@@ -1086,25 +1500,35 @@
       document.getElementById('inboxView').style.display = 'flex';
     }
 
-    /* AUDIO VOICE MEMOS & NOTIFIKASI TRIGGER */
+    /* VOICE MEMOS: JEDA BGM SAAT SUARA MAVE MEMUTAR */
     function toggleAudio(num) {
       const audio = document.getElementById('audio' + num);
       const card = document.getElementById('card' + num);
       const btn = card.querySelector('.play-btn');
+      const bgm = document.getElementById('bgmMusic');
 
       if (activeAudioNum === num && !audio.paused) {
         audio.pause();
         btn.innerText = '▶';
         card.classList.remove('playing');
         activeAudioNum = null;
+        if (bgm) bgm.play().catch(e => console.log(e));
       } else {
         stopAllAudio();
+        if (bgm) bgm.pause(); // Jeda BGM
+
         audio.play().catch(e => console.log('Upload file suara' + num + '.mp3'));
         btn.innerText = '⏸';
         card.classList.add('playing');
         activeAudioNum = num;
 
-        // Trigger notifikasi saat Sevanth pertama kali mendengarkan audio
+        audio.onended = function() {
+          btn.innerText = '▶';
+          card.classList.remove('playing');
+          activeAudioNum = null;
+          if (bgm) bgm.play().catch(e => console.log(e));
+        };
+
         if (!notifTriggered) {
           notifTriggered = true;
           triggerVoiceNotifications();
@@ -1122,12 +1546,10 @@
       activeAudioNum = null;
     }
 
-    /* NOTIFIKASI DOKTER PSIKOLOGI & INSTAGRAM */
     function triggerVoiceNotifications() {
       const box = document.getElementById('voiceNotifBox');
       box.innerHTML = '';
 
-      // 1. Notif Dokter Psikologi (muncul setelah 2 detik)
       setTimeout(() => {
         const n1 = document.createElement('div');
         n1.className = 'v-notif';
@@ -1138,7 +1560,6 @@
         box.appendChild(n1);
       }, 1800);
 
-      // 2. Notif Instagram dengan tombol 'Klik me' (muncul setelah 4.5 detik)
       setTimeout(() => {
         const n2 = document.createElement('div');
         n2.className = 'v-notif';
@@ -1153,22 +1574,18 @@
       }, 4500);
     }
 
-    function openIgPrompt() {
-      document.getElementById('igPromptModal').style.display = 'flex';
-    }
-
-    function closeIgPrompt() {
-      document.getElementById('igPromptModal').style.display = 'none';
-    }
-
+    function openIgPrompt() { document.getElementById('igPromptModal').style.display = 'flex'; }
+    function closeIgPrompt() { document.getElementById('igPromptModal').style.display = 'none'; }
     function goToInstagram() {
       closeIgPrompt();
       stopAllAudio();
       document.getElementById('voiceApp').style.display = 'none';
       openApp('instagramApp');
+
+      const bgm = document.getElementById('bgmMusic');
+      if (bgm && bgm.paused) bgm.play().catch(e => console.log(e));
     }
 
-    /* INSTAGRAM MODAL POST */
     function openPost(num) {
       const modal = document.getElementById('igPostModal');
       const img = document.getElementById('modalPostImg');
@@ -1180,8 +1597,104 @@
       modal.style.display = 'flex';
     }
 
-    function closePostModal() {
-      document.getElementById('igPostModal').style.display = 'none';
+    function closePostModal() { document.getElementById('igPostModal').style.display = 'none'; }
+    function dismissNotesNotif() { document.getElementById('igNotesNotif').style.display = 'none'; }
+
+    function goToNotesApp() {
+      dismissNotesNotif();
+      closePostModal();
+      document.getElementById('instagramApp').style.display = 'none';
+      openApp('notesApp');
+    }
+
+    function openNoteReader(num) {
+      const modal = document.getElementById('noteReaderModal');
+      const img = document.getElementById('readerImg');
+      const d = document.getElementById('readerDate');
+      const t = document.getElementById('readerTitle');
+      const p = document.getElementById('readerPoem');
+      const triggerBtn = document.getElementById('note10VideoTriggerArea');
+
+      img.src = 'note' + num + '.jpg';
+      img.onerror = function() { this.src = 'foto' + ((num % 5) + 1) + '.jpeg'; };
+      d.innerText = notesData[num].date;
+      t.innerText = notesData[num].title;
+      p.innerText = notesData[num].poem;
+
+      if (num === 10) {
+        triggerBtn.style.display = 'block';
+        setTimeout(() => {
+          triggerVideoAlertModal();
+        }, 3200);
+      } else {
+        triggerBtn.style.display = 'none';
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeNoteReader() {
+      document.getElementById('noteReaderModal').style.display = 'none';
+    }
+
+    function triggerVideoAlertModal() {
+      document.getElementById('videoAlertModal').style.display = 'flex';
+    }
+
+    function closeVideoAlert() {
+      document.getElementById('videoAlertModal').style.display = 'none';
+    }
+
+    /* MENUJU PEMUTAR VIDEO TERAKHIR */
+    function goToVideoApp() {
+      closeVideoAlert();
+      closeNoteReader();
+      document.getElementById('notesApp').style.display = 'none';
+      openApp('videoApp');
+
+      // JEDA BGM AGAR VIDEO MAVE TERDENGAR JELAS
+      const bgm = document.getElementById('bgmMusic');
+      if (bgm) bgm.pause();
+
+      const vid = document.getElementById('lastVideoPlayer');
+      if (vid) {
+        vid.currentTime = 0;
+        vid.play().catch(e => console.log('Upload last_video.mp4'));
+
+        // EVENT OTOMATIS: KETIKA VIDEO SELESAI, HP SHUTDOWN / CRASH!
+        vid.onended = function() {
+          triggerPhoneCrash();
+        };
+      }
+    }
+
+    /* EFEK GLITCH, BUFFERING CRASH & SHUTDOWN MATI TOTAL */
+    function triggerPhoneCrash() {
+      const phone = document.getElementById('phoneBox');
+      const overlay = document.getElementById('crashOverlay');
+      const crashText = document.getElementById('crashText');
+      const battery = document.getElementById('batteryIndicator');
+
+      // 1. HP BERGETAR GLITCH PARAH & INDIKATOR BATERAI HABIS
+      phone.classList.add('glitching-screen');
+      battery.innerText = '⚡ 0%';
+      battery.style.color = '#ff0000';
+
+      // 2. MUNCULKAN SCREEN BUFFERING ERROR
+      setTimeout(() => {
+        overlay.style.display = 'flex';
+      }, 700);
+
+      // 3. FASE SHUTDOWN BLACKOUT PERMANEN
+      setTimeout(() => {
+        phone.classList.remove('glitching-screen');
+        crashText.innerHTML = `
+          <span style="font-size: 15px; font-weight: 700; color: #fff;">[ BATERAI HABIS • 0% ]</span><br><br>
+          <span style="color: #666; font-size: 11px;">Ponsel kehabisan daya.<br>Perangkat dinonaktifkan secara permanen.</span><br><br>
+          <span style="color: #fff; font-size: 13px; font-style: italic; font-family: 'Playfair Display', serif;">"Selamat tinggal, Abang..."</span>
+        `;
+        document.querySelector('.shutdown-spinner').style.display = 'none';
+      }, 3500);
     }
   </script>
 </body>
